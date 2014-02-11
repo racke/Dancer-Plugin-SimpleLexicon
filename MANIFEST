@@ -5,6 +5,10 @@ MANIFEST			This list of files
 README
 t/00-load.t
 t/boilerplate.t
+t/languages/en.po
+t/languages/it.po
+t/languages/se.po
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
+t/translations.t

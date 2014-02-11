@@ -62,6 +62,51 @@ In your module
     my $string = l('Hello %s', 'Marco');
     # assuming languages/it.po have a translation for this, will return "Ciao Marco"
 
+=head1 SETTINGS
+
+This module is a tiny alternative to L<Dancer::Plugin::Lexicon>. See
+what it works best for you.
+
+Explanation of the settings.
+
+=head2 path
+
+The path, absolute or relative, to the C<.po> files. The C<.po> files
+must be named as the defined language tags (see below).
+
+=head2 langs
+
+An array of keys/values with the language tag and the full name on the
+language.
+
+Please note that if you define a language "it", the file
+C<languages/it.po> B<must be present>.
+
+=head2 param_name
+
+If specified, when determining the language, the module will try to
+lookup the key in the request parameters (C<param>).
+
+=head2 session_name
+
+The key of the C<session> where to read and store the current language.
+If not specified, the session is not touched.
+
+=head2 var_name
+
+The name of the Dancer C<var> to read when determining the current language.
+
+=head2 default
+
+The value of the default language. If not specified, and the looking up
+in the above values fails, no translation will be done.
+
+=head2 encoding
+
+If specified, the string returned by maketext will be decoded using
+this encoding. If your .po files are stored in UTF-8, set this to
+C<UTF-8>.
+
 =head1 EXPORT
 
 =head2 l($string, @args)
@@ -152,19 +197,23 @@ sub _determine_language {
         # wrap in eval, if we're out of a rout would crash
         eval {
             $lang = param($settings->{param_name});
+            debug "Found $lang found in param";
         }
     }
 
     if (!$lang && $settings->{session_name}) {
         $lang = session($settings->{session_name});
+        debug "Found $lang found in session";
     }
 
     if (!$lang && $settings->{var_name}) {
         $lang = var($settings->{var_name});
+        debug "Found $lang found in var";
     }
 
     if (!$lang && $settings->{default}) {
         $lang = $settings->{default};
+        debug "using default";
     }
 
     return $lang;
@@ -182,20 +231,29 @@ sub _localize {
     my $settings = plugin_setting;
     my $lang = _determine_language();
 
+    my $default_string = $string;
+    if (@args) {
+        $default_string = sprintf($default_string, @args);
+    }
+
     unless ($lang) {
         info "No valid configuration find for " . __PACKAGE__;
-        return $string;
+        return $default_string;
     }
 
     # get the handler
     my $h = $Handlers->{$lang};
-    die "Couldn't get an handler for $lang!" unless $h;
+    unless ($h) {
+        warn "Couldn't get an handler for $lang!";
+        return $default_string;
+    }
+     
 
     # try to translate. If not so, return the string
     my $translation;
     eval { $translation = $h->maketext($string) };
     unless (defined $translation and $translation =~ /\S/) {
-        return $string;
+        return $default_string;
     }
 
     # decode the string
