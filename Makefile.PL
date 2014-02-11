@@ -18,9 +18,14 @@ WriteMakefile(
         'Test::More' => 0,
     },
     PREREQ_PM => {
-        #'ABC'              => 1.6,
-        #'Foo::Bar::Module' => 5.0401,
+        'Dancer' => 0,
+        'Locale::Maketext::Lexicon' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Dancer-Plugin-SimpleLexicon-*' },
 );
+
+
+# Local Variables:
+# cperl-indent-parens-as-block: t
+# End:
