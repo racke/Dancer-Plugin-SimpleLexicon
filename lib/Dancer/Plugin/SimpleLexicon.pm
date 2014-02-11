@@ -7,7 +7,7 @@ use Locale::Maketext::Lexicon;
 
 sub import_po_file {
     my ($self, $lang, $pofile) = @_;
-    warn "$self, $lang, $pofile";
+    # warn "$self, $lang, $pofile";
     Locale::Maketext::Lexicon->import({
                                        $lang => [Gettext => $pofile],
                                       });
@@ -166,7 +166,7 @@ register_plugin;
 sub _init_handlers {
     my $settings = plugin_setting;
     my %handlers;
-    debug to_dumper($settings);
+    # debug to_dumper($settings);
     if ($settings && $settings->{langs} && $settings->{path}) {
         foreach my $lang (keys %{$settings->{langs}}) {
             my $path = catfile($settings->{path}, $lang . ".po");
@@ -197,23 +197,23 @@ sub _determine_language {
         # wrap in eval, if we're out of a rout would crash
         eval {
             $lang = param($settings->{param_name});
-            debug "Found $lang found in param";
+            # debug "Found $lang found in param";
         }
     }
 
     if (!$lang && $settings->{session_name}) {
         $lang = session($settings->{session_name});
-        debug "Found $lang found in session";
+        # debug "Found $lang found in session";
     }
 
     if (!$lang && $settings->{var_name}) {
         $lang = var($settings->{var_name});
-        debug "Found $lang found in var";
+        # debug "Found $lang found in var";
     }
 
     if (!$lang && $settings->{default}) {
         $lang = $settings->{default};
-        debug "using default";
+        # debug "using default";
     }
 
     return $lang;
@@ -244,7 +244,7 @@ sub _localize {
     # get the handler
     my $h = $Handlers->{$lang};
     unless ($h) {
-        warn "Couldn't get an handler for $lang!";
+        # warn "Couldn't get an handler for $lang!";
         return $default_string;
     }
      
