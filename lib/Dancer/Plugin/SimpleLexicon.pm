@@ -119,10 +119,59 @@ provided, pass the string to sprintf with the arguments.
 Return the current language used, returning the long name of the
 language as defined in the configuration.
 
+The priority set is follow: param, session, var, default. The first
+wins, assuming it was defined in the config. Unclear if it's the right
+thing to do. TODO: make this configurable or at runtime.
+
 =head2 set_language($language_tag)
 
 Set the current language to $language_tag, writing it into the
 session, using the key specified in the C<session_name> value.
+
+=head1 Dancer::Template::TemplateFlute integration
+
+In the configuration:
+
+  engines:
+    template_flute:
+      i18n:
+        class: My::Lexicon
+        method: localize
+  plugins:
+    SimpleLexicon:
+      path: languages
+      session_name:   lang
+      param_name:     lang
+      var_name:       lang
+      default:        en
+      encoding: UTF-8
+      langs:
+        en:    "US English"
+        de:    "Deutsch"
+        nl:    "Netherlands"
+        se:    "Sweden"
+
+And write the tiny class My::Lexicon wit the following content:
+
+  package My::Lexicon;
+  use Dancer ':syntax';
+  use Dancer::Plugin::SimpleLexicon;
+  use Encode;
+  
+  sub new {
+      my $class = shift;
+      my $self = {};
+      bless $self, $class;
+  }
+  
+  sub localize {
+      my ($self, $string) = @_;
+      my $translated = l($string);
+      return $translated;
+  }
+  
+  1;
+
 
 =cut
 
