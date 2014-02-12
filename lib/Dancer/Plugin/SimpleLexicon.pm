@@ -103,9 +103,10 @@ in the above values fails, no translation will be done.
 
 =head2 encoding
 
-If specified, the string returned by maketext will be decoded using
-this encoding. If your .po files are stored in UTF-8, set this to
-C<UTF-8>.
+The string returned by maketext will be decoded using
+this encoding. By default is C<UTF-8>.
+
+To disable the decoding, set it to C<raw>.
 
 =head1 EXPORT
 
@@ -306,7 +307,8 @@ sub _localize {
     }
 
     # decode the string
-    if (my $enc = $settings->{encoding}) {
+    my $enc = $settings->{encoding} || 'UTF-8';
+    unless ($enc eq 'raw') {
         $translation = decode($enc, $translation);
     }
 

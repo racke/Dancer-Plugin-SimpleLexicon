@@ -17,7 +17,6 @@ use Dancer::Test;
 
 set plugins => {
                 'SimpleLexicon' => {
-                                    'encoding' => 'UTF-8',
                                     'var_name' => 'lang',
                                     'default' => 'en',
                                     'langs' => { 
