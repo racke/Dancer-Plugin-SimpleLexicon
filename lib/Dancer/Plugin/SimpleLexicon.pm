@@ -152,7 +152,7 @@ In the configuration:
         nl:    "Netherlands"
         se:    "Sweden"
 
-And write the tiny class My::Lexicon wit the following content:
+And write the tiny class My::Lexicon with the following content:
 
   package My::Lexicon;
   use Dancer ':syntax';
