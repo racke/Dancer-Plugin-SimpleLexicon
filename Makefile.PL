@@ -23,6 +23,13 @@ WriteMakefile(
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Dancer-Plugin-SimpleLexicon-*' },
+    META_MERGE        => {
+        resources => {
+            repository  => 'https://github.com:racke/Dancer-Plugin-SimpleLexicon.git',
+            bugtracker => 'https://github.com/racke/Dancer-Plugin-SimpleLexicon/issues',
+            IRC => 'irc://irc.perl.org/#dancer',
+        },
+    },
 );
 
 
